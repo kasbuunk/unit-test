@@ -1,0 +1,16 @@
+output = "gen/pgmodel"
+pkgname = "pgmodel"
+add-enum-types = true
+wipe = true
+no-tests = false
+no-hooks = true
+
+[psql]
+host = "localhost"
+dbname = "unit"
+user = "postgres"
+pass = "postgres"
+sslmode = "disable"
+whitelist = ["users"]
+
+
