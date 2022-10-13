@@ -1,4 +1,4 @@
-# Unit-test
+# How to write Go unit tests
 Golang unit testing examples.
 
 Please refer to `client`, `server`, `repository`, `eventbus` and `repository/storage` for packages containing various unit tests. 

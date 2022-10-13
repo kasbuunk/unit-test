@@ -22,7 +22,7 @@ func (s *MiddlewareTestSuite) SetupSuite() {
 	testHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, err := fmt.Fprint(w, s.expectedResponseBody)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
 			s.FailNow("writing response")
 			return
 		}
@@ -61,7 +61,11 @@ func (s *MiddlewareTestSuite) TestMiddleware() {
 			recorder := httptest.NewRecorder()
 			s.handler.ServeHTTP(recorder, req)
 			res := recorder.Result()
-			s.Require().Equal(testCase.expectedResponseStatus, res.StatusCode)
+			s.Require().Equal(
+				testCase.expectedResponseStatus,
+				res.StatusCode,
+				"Unexpected http response status code.",
+			)
 
 			if testCase.expectedResponseStatus != http.StatusOK {
 				return

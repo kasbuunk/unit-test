@@ -46,12 +46,12 @@ func (b *RegioBus) Subscribe(stream Stream, subject Subject) (chan Event, error)
 // New is initialised with a predetermined set of streams. Its subscriptions
 // should be added after initialisation, upon passing it to the services. The services
 // themselves are responsible for calling the method that adds their subscription.
-func New(streamNames []string) *RegioBus {
+func New(streamNames []string) RegioBus {
 	var streams []Stream
 	for _, stream := range streamNames {
 		streams = append(streams, Stream(stream))
 	}
-	return &RegioBus{
+	return RegioBus{
 		Streams:       streams,
 		Subscriptions: []Subscription{},
 	}

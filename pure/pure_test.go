@@ -17,7 +17,7 @@ func (s *PureTestSuite) SetupSuite() {
 	s.configPrefix = "configuration: "
 }
 
-func TestMyTestSuite(t *testing.T) {
+func TestPureSuite(t *testing.T) {
 	suite.Run(t, new(PureTestSuite))
 }
 

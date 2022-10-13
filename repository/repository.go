@@ -54,7 +54,7 @@ func (r Repository) Users(ctx context.Context) ([]*User, error) {
 func (r Repository) UserSave(ctx context.Context, usr User) (*User, error) {
 	pgUser := userToPGModel(&usr)
 
-	err := pgUser.Upsert(ctx, r.DB, true, []string{}, boil.Infer(), boil.Infer())
+	err := pgUser.Upsert(ctx, r.DB, true, []string{}, boil.Infer(), boil.Blacklist("id"))
 	if err != nil {
 		return nil, errors.Wrap(err, "upserting user")
 	}
@@ -76,7 +76,10 @@ func (r Repository) UserDeleteAll(ctx context.Context) (int, error) {
 }
 
 func (r Repository) UserDelete(ctx context.Context, id uuid.UUID) (int, error) {
-	rowsAffected, err := pgmodel.Users(pgmodel.UserWhere.ID.EQ(id.String())).DeleteAll(ctx, r.DB)
+	usr := pgmodel.User{
+		ID: id.String(),
+	}
+	rowsAffected, err := usr.Delete(ctx, r.DB)
 	if err != nil {
 		return 0, errors.Wrap(err, "deleting user")
 	}
