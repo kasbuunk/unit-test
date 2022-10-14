@@ -15,7 +15,7 @@ type UserTestSuite struct {
 }
 
 // SetupTest initializes global state.
-func (s *UserTestSuite) SetupTest() {
+func (s *UserTestSuite) SetupSuite() {
 	s.serverEndpoint = "https://example.com/endpoint"
 }
 
@@ -49,9 +49,10 @@ func (s *UserTestSuite) TestBuildRequest() {
 			req, err := buildRequest(context.Background(), s.serverEndpoint, testCase.inputParam)
 			if testCase.expectedErr != nil {
 				s.Equal(testCase.expectedErr, err)
-			} else {
-				s.Equal(testCase.expectedURL, req.URL.String())
+				return
 			}
+			s.Require().NoError(err, "oh no, an error anyway")
+			s.Equal(testCase.expectedURL, req.URL.String())
 		})
 	}
 }

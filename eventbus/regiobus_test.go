@@ -1,15 +1,15 @@
 package eventbus
 
 import (
+	"sync"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/suite"
 )
 
 type EventBusTestSuite struct {
 	suite.Suite
-	EventBus *RegioBus
+	EventBus RegioBus
 }
 
 func (s *EventBusTestSuite) SetupTest() {
@@ -32,15 +32,23 @@ func (s *EventBusTestSuite) TestPubSub() {
 		Stream:  invoiceStream,
 		Subject: "invoice paid",
 	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	go func() {
 		incomingEvent := <-incomingEvents
 		s.Equal(orderEvent, incomingEvent)
 		s.NotEqual(invoiceEvent.Stream, incomingEvent)
+		wg.Done()
 	}()
 
 	err = s.EventBus.Publish(orderEvent)
 	s.NoError(err)
-	time.Sleep(20 * time.Millisecond)
+	err = s.EventBus.Publish(invoiceEvent)
+	s.NoError(err)
+
+	wg.Wait()
 }
 
 func TestEventBusTestSuite(t *testing.T) {
